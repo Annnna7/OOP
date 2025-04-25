@@ -1,0 +1,39 @@
+double[] arr = {-1, 0, 1};
+        TabulatedFunction f1, f2, f11, f22;
+        System.out.println("Массив");
+        f1 = new ArrayTabulatedFunction(0, 2, arr);
+        f11 = new ArrayTabulatedFunction(0, 2, arr);
+//        for (int i = 0; i < f1.getPointsCount(); i++) {
+//            System.out.println("X" + i + " = " + f1.getPointX(i) + " Y" + i + " = " + f1.getFunctionValue(i));
+//        }
+        System.out.println(f1.toString());
+        System.out.println("Список");
+        f2 = new LinkedListTabulatedFunction(0, 2, arr);
+        f22 = new LinkedListTabulatedFunction(0, 2, arr);
+//        for (int i = 0; i < f2.getPointsCount(); i++) {
+//            System.out.println("X" + i + " = " + f2.getPointX(i) + " Y" + i + " = " + f2.getFunctionValue(i));
+//        }
+        System.out.println(f2.toString());
+        if (f22.equals(f2)) {
+            System.out.println("Равны");
+        } else {
+            System.out.println("Не равны");
+        }
+        System.out.println(f1.hashCode());
+        System.out.println(f11.hashCode());
+        System.out.println(f2.hashCode());
+        System.out.println(f22.hashCode());
+
+        System.out.println("Клонирование объектов");
+        TabulatedFunction f1c, f2c;
+        System.out.println(f1.toString());
+        System.out.println(f2.toString());
+        f2c = (LinkedListTabulatedFunction) f2.clone();
+        f1c = (ArrayTabulatedFunction) f1.clone();
+        f1.setPointX(1, 0.5);
+        System.out.println(f1.toString());
+        System.out.println(f1c.toString());
+        System.out.println(f2.toString());
+        f2.setPointX(1, 0.5);
+        System.out.println(f2.toString());
+        System.out.println(f2c.toString());

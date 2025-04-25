@@ -1,0 +1,139 @@
+public String toString(){
+        return new String("(" + this.x + ", " + this.y + ")");
+    }
+public boolean equals(Object o) {
+        if (o instanceof FunctionPoint point){
+            if (this.x == point.x && this.y == point.y){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+public int hashCode() {
+        int code = 7;
+        code = 31*code + (int) (Double.doubleToLongBits(this.x)^ (Double.doubleToLongBits(this.x)>>>32));
+        code = 31*code + (int) (Double.doubleToLongBits(this.x)^ (Double.doubleToLongBits(this.x)>>>32));
+        return code;
+    }
+public Object clone() {
+        return new FunctionPoint(this);
+    }
+
+
+
+
+public String toString() {
+        StringBuilder o = new StringBuilder("{");
+        for (int i =0;i<count; ++i){
+            o.append(arr[i].toString());
+            o.append(", ");
+        }
+        o.deleteCharAt(o.length() - 1);
+        o.deleteCharAt(o.length() - 1);
+        o.append("}");
+        return o.toString();
+    }
+public boolean equals(Object o) {
+        if (o instanceof TabulatedFunction){
+            if (o instanceof ArrayTabulatedFunction){
+                ArrayTabulatedFunction f = (ArrayTabulatedFunction) o;
+                if (f.count == count){
+                    for (int i=0;i<count; ++i){
+                        if (f.arr[i].x != arr[i].x || f.arr[i].y != arr[i].y)
+                            return false;
+                    }
+                    return true;
+                }
+                return false;
+            }
+            else {
+                TabulatedFunction n = (TabulatedFunction) o;
+                if (n.getPointsCount() == count){
+                    for (int i =0; i< count; ++i){
+                        if (!n.getPoint(i).equals(arr[i]))
+                            return false;
+                    }
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+public int hashCode() {
+        int code = 7;
+        for (int i=0;i<count;++i)
+            code = 31*code + arr[i].hashCode();
+        return code;
+    }
+public Object clone(){
+        FunctionPoint[] ans = new FunctionPoint[count];
+        for (int i =0; i<count; ++i){
+            ans[i] = (FunctionPoint) arr[i].clone();
+        }
+        return new ArrayTabulatedFunction(ans);
+    }
+
+
+
+
+
+public String toString() {
+        FunctionNode curr = head.next;
+        StringBuilder buf = new StringBuilder("{");
+        while (curr != head.prev) {
+            buf.append(curr.value).append(", ") ;
+            curr = curr.next;
+        }
+        buf.append(curr.value);
+        buf.append("}");
+        return buf.toString();
+    }
+public boolean equals(Object o) {
+        if (o instanceof TabulatedFunction) {
+            if (o instanceof LinkedListTabulatedFunction) {
+                LinkedListTabulatedFunction f = (LinkedListTabulatedFunction) o;
+                if (size == f.getPointsCount()) {
+                    FunctionNode curr1 = head.next;
+                    FunctionNode curr2 = f.head.next;
+                    do {
+                        if (!curr1.value.equals(curr2.value))
+                            return false;
+                        curr1 = curr1.next;
+                        curr2 = curr2.next;
+                    } while (curr1 != head.next);
+                    return true;
+                }
+                return false;
+            } else {
+                TabulatedFunction f = (TabulatedFunction) o;
+                if (size == f.getPointsCount()) {
+                    for (int i = 0; i < size; ++i)
+                        if (!f.getPoint(i).equals(this.getPoint(i)))
+                            return false;
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+public int hashCode() {
+        int code = 7;
+        FunctionNode curr = head.next;
+        do {
+            code = 31 * code + curr.value.hashCode();
+            curr = curr.next;
+        } while (curr != head.next);
+        return code;
+    }
+public Object clone(){
+        FunctionPoint[] ans = new FunctionPoint[size];
+        FunctionNode curr = head.next;
+        for (int i = 0; i < size; ++i){
+            ans[i] = curr.value;
+            curr = curr.next;
+        }
+        return new LinkedListTabulatedFunction(ans);
+    }

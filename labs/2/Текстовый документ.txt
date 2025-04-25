@@ -1,0 +1,23 @@
+public double getFunctionValue(double X) {
+        if (X >= this.getLeftDomainBorder() && X <= this.getRightDomainBorder()) {
+            int l = 0, r = count - 1;
+            int mid = (l + r) / 2;
+            while (l <= r) {
+                mid = (l + r) / 2;
+                if (arr[mid].x == X) {
+                    return arr[mid].y;
+                }
+                else if (arr[mid].x > X)
+                    r = mid - 1;
+                else { l = mid + 1; }
+            }
+            if (arr[mid].x < X) { ++mid;}
+            else {
+                double k = (arr[mid].y - arr[mid - 1].y)/(arr[mid].x - arr[mid - 1].x);
+                double b = arr[mid].y - k * arr[mid].x;
+                return k * X + b;
+            }
+        }
+        //возвращает значение неопределенности, в поле NaN класса Double
+        return Double.NaN;
+    }

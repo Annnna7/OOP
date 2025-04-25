@@ -1,0 +1,40 @@
+public static void nonThread(){
+        Task task = new Task(100);
+        for (int i = 0; i< task.getCount(); ++i) {
+            task.setF(new Log(Math.random() * 10));
+            task.setLeftX(Math.random() * 100);
+            task.setRightX(Math.random() * 100 + 100);
+            task.setStep(Math.random());
+            System.out.println("Source " + task.getLeftX() + " " + task.getRightX() + " " + task.getStep());
+            double ans = Functions.integral(task.getF(), task.getLeftX(), task.getRightX(), task.getStep());
+            System.out.println("Result " + task.getLeftX() + " " + task.getRightX() + " " + task.getStep() + " " + ans);
+        }
+    }
+    public static void simpleThread() throws InterruptedException{
+        Task task = new Task(100);
+        Thread generatorThread = new Thread(new SimpleGenerator(task));
+        Thread integratorThread = new Thread(new SimpleIntegrator(task));
+        generatorThread.start();
+        integratorThread.start();
+        generatorThread.join();
+        integratorThread.join();
+    }
+    public static void complicatedThreads() throws InterruptedException {
+        Task task = new Task(100);
+        Semaphore semaphore = new Semaphore();
+        Generator generator = new Generator(task, semaphore);
+        Integrator integrator = new Integrator(task, semaphore);
+        Thread generatorThread = new Thread(generator);
+        Thread integratorThread = new Thread(integrator);
+        generatorThread.start();
+        integratorThread.start();
+        Thread.sleep(50);
+        generatorThread.interrupt();
+        integratorThread.interrupt();
+    }
+
+//        double ans = Functions.integral(new Exp(), 0, 1, 0.1);
+//        System.out.println(" Y = " + ans);
+        //nonThread();
+        //simpleThread();
+        //complicatedThreads();

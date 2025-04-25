@@ -1,0 +1,70 @@
+package functions;
+import java.io.*;
+public class TabulatedFunctions {
+    private TabulatedFunctions() {}
+    public static TabulatedFunction tabulate(Function function, double leftX, double rightX, int pointsCount) {
+        if (leftX < function.getLeftDomainBorder() || rightX > function.getRightDomainBorder())
+            throw new IllegalArgumentException("Incorrect");
+        else {
+            TabulatedFunction fun = new ArrayTabulatedFunction(leftX, rightX, pointsCount);
+            double currX = leftX;
+            double difference = (rightX - leftX) / (pointsCount - 1);
+            for (int i = 0; i < pointsCount; ++i) {
+                fun.setPointY(i, function.getFunctionValue(currX));
+                currX += difference;
+            }
+            return fun;
+        }
+    }
+    public static void outputTabulatedFunction(TabulatedFunction function, OutputStream out) {
+        DataOutputStream o = new DataOutputStream(out);
+        try {
+            o.writeInt(function.getPointsCount());
+            for (int i = 0; i < function.getPointsCount(); ++i) {
+                o.writeDouble(function.getPointX(i));
+                o.writeDouble(function.getPointY(i));
+            }
+            o.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static TabulatedFunction inputTabulatedFunction(InputStream in) {
+        DataInputStream inn = new DataInputStream(in);
+        int size = 0;
+        try {
+            size = inn.readInt();
+            FunctionPoint[] points = new FunctionPoint[size];
+            for (int i = 0; i < size; ++i)
+                points[i] = new FunctionPoint(inn.readDouble(), inn.readDouble());
+            return new ArrayTabulatedFunction(points, size);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void writeTabulatedFunction(TabulatedFunction function, Writer out) throws IOException {
+        BufferedWriter o = new BufferedWriter(out);
+        int size = function.getPointsCount();
+        o.write(Integer.toString(size));
+        o.newLine();
+        for (int i = 0; i < size; i++) {
+            o.write((function.getPointX(i))+ " " + (function.getPointY(i)) + '\n');
+        }
+        o.flush();
+    }
+    public static TabulatedFunction readTabulatedFunction(Reader in) throws IOException {
+        StreamTokenizer o = new StreamTokenizer(in);
+        o.nextToken();
+        int size = (int) o.nval;
+        double x, y;
+        FunctionPoint[] value = new FunctionPoint[size];
+        for (int i = 0; i < size; ++i){
+            o.nextToken();
+            x = o.nval;
+            o.nextToken();
+            y = o.nval;
+            value[i] = new FunctionPoint(x, y);
+        }
+        return new ArrayTabulatedFunction(value, size);
+    }
+}

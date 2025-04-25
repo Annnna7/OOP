@@ -1,0 +1,21 @@
+package functions;
+
+public class FunctionPoint {
+    double x, y;
+    public FunctionPoint(double a, double b) {
+        this.x = a; this.y = b;
+    }
+    public FunctionPoint(FunctionPoint point) {
+        super();
+        this.x = point.x; this.y = point.y;
+    }
+    public FunctionPoint(){
+        this.x = 0; this.y = 0;
+    }
+    public void setX(double x) {
+        this.x = x;
+    }
+    public void setY(double y) {
+        this.y = y;
+    }
+}

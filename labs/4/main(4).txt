@@ -1,0 +1,75 @@
+import functions.*;
+import functions.basic.*;
+import functions.meta.*;
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InappropriateFunctionPointException {
+        TabulatedFunction t_cos,t_sin;
+        Sin sin = new Sin();
+        System.out.println("Синус");
+        for (double i = 0; i < 2 * Math.PI; i += 0.1) {
+            System.out.println("X = " + i + " Y = " + sin.getFunctionValue(i));
+        }
+        Cos cos = new Cos();
+        System.out.println("Косинус");
+        for (double i = 0; i < 2 * Math.PI; i += 0.1) {
+            System.out.println("X = " + i + " Y = " + cos.getFunctionValue(i));
+        }
+        t_sin = TabulatedFunctions.tabulate(sin,0,2*Math.PI,10);
+        System.out.println("Табулированный Синус");
+        for (double i = 0; i < 2 * Math.PI; i += 0.1) {
+            System.out.println("X = " + i + " Y = " + sin.getFunctionValue(i));
+        }
+        t_cos = TabulatedFunctions.tabulate(cos,0,2*Math.PI,10);
+        System.out.println("Табулированный Косинус");
+        for (double i = 0; i < 2 * Math.PI; i += 0.1) {
+            System.out.println("X = " + i + " Y = " + cos.getFunctionValue(i));
+        }
+        Function sin2 = Functions.power(t_sin, 2);
+        Function cos2 = Functions.power(t_cos, 2);
+        Function Sum = Functions.sum(sin2, cos2);
+        System.out.println("Табулированная Сумма");
+        for (double i = 0; i < 2 * Math.PI; i += 0.1) {
+            System.out.println("X = " + i + " Y = " + Sum.getFunctionValue(i));
+        }
+        System.out.println("Табулированная экспонента");
+        Exp exp = new Exp();
+        TabulatedFunction e = TabulatedFunctions.tabulate(exp,0,10,11);
+        FileWriter writer = new FileWriter("exp.txt");
+        TabulatedFunctions.writeTabulatedFunction(e, writer);
+        writer.flush();
+        writer.close();
+        FileReader reader = new FileReader("exp.txt");
+        TabulatedFunction e1 = TabulatedFunctions.readTabulatedFunction(reader);
+        reader.close();
+        System.out.println("Табулированный логарифм");
+        Log log = new Log(Math.E);
+        TabulatedFunction l = TabulatedFunctions.tabulate(log,0,10,11);
+        OutputStream out = new FileOutputStream("log.txt");
+        TabulatedFunctions.outputTabulatedFunction(l, out);
+        out.flush();
+        out.close();
+        InputStream in = new FileInputStream("log.txt");
+        TabulatedFunction l1 = TabulatedFunctions.inputTabulatedFunction(in);
+        reader.close();
+        System.out.println("Логарифм от экспоненты");
+        Function comp = Functions.composition(log, exp);
+        TabulatedFunction t_comp = TabulatedFunctions.tabulate(comp,0,10,11);
+        for (double i = 0; i < 11; ++i) {
+            System.out.println("X = " + i + " Y = " + t_comp.getFunctionValue(i));
+        }
+        FileOutputStream fout = new FileOutputStream("comp.txt");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fout);
+        objectOutputStream.writeObject(t_comp);
+        objectOutputStream.close();
+        FileInputStream fin = new FileInputStream("comp.txt");
+        ObjectInputStream objectInputStream = new ObjectInputStream(fin);
+        TabulatedFunction comp1 = (TabulatedFunction) objectInputStream.readObject();
+        objectInputStream.close();
+        System.out.println("Логарифм от экспоненты из файла");
+        for (double i = 0; i < 11; ++i) {
+            System.out.println("X = " + i + " Y = " + comp1.getFunctionValue(i));
+        }
+    }
+}

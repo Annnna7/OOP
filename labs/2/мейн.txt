@@ -1,0 +1,39 @@
+import functions.*;
+public class Main {
+    public static void main(String[] args) {
+        double[] parabola = {-8, -1, 0, 1, 8};
+        TabulatedFunction fun = new TabulatedFunction(-2, 2, parabola);
+        for (int i = 0; i < fun.getPointsCount(); ++i) {
+            System.out.println("X"+ i +" = "+fun.getPointX(i)+" Y"+ i +" = "+fun.getPointY(i));
+        }
+        System.out.println("Function domain: " + fun.getLeftDomainBorder() + "  " + fun.getRightDomainBorder());
+        //Нахождение значений функции
+        //System.out.println("Function value");
+        System.out.println("x = -4 ans = " + fun.getFunctionValue(-4));
+        System.out.println("x = -2 ans = " + fun.getFunctionValue(-2));
+        //System.out.println("x = 1.5 ans = " + fun.getFunctionValue(1.5));
+        System.out.println("x = - 1.5 ans = " + fun.getFunctionValue(- 1.5));
+        System.out.println("x = 0.5 ans = " + fun.getFunctionValue(0.5));
+        System.out.println("x = 5 ans = " + fun.getFunctionValue(5));
+        System.out.println("count = " + fun.getPointsCount());
+
+        //fun.deletePoint(3);
+        //for (int i = 0; i< fun.getPointsCount(); ++i) {
+        //    System.out.println("X"+(i)+" = "+fun.getPointX(i)+" Y"+(i)+" = "+fun.getPointY(i));
+        //}
+        FunctionPoint q = new FunctionPoint (1.5,4.5);
+        //FunctionPoint m = new FunctionPoint (-1.5,-4.5);
+        fun.addPoint(q);
+        //square.addPoint(m);
+        for (int i = 0; i < fun.getPointsCount(); ++i) {
+            System.out.println("X"+ i +" = "+ fun.getPointX(i)+" Y"+ i +" = "+ fun.getPointY(i));
+        }
+        System.out.println();
+        //замена точки
+        FunctionPoint m = new FunctionPoint (0,0);
+        fun.setPoint(3, m);
+        for (int i = 0; i < fun.getPointsCount(); ++i) {
+            System.out.println("X"+ i +" = "+ fun.getPointX(i)+" Y"+ i +" = " + fun.getPointY(i));
+        }
+    }
+}

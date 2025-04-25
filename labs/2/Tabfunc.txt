@@ -1,0 +1,87 @@
+package functions;
+public class TabulatedFunction {
+    private FunctionPoint[] arr;
+    private int count;
+    public TabulatedFunction(double leftX, double rightX, int pointsCount) {
+        count = pointsCount;
+        arr = new FunctionPoint[pointsCount];
+        arr[0] = new FunctionPoint(leftX, 0);
+        for (int i = 1; i < pointsCount; ++i) {
+            arr[i] = new FunctionPoint(arr[i - 1].x + (rightX - leftX) / (pointsCount - 1), 0);
+        }
+    }
+    public TabulatedFunction(double leftX, double rightX, double[] values) {
+        count = values.length;
+        arr = new FunctionPoint[values.length];
+        arr[0] = new FunctionPoint(leftX,values[0]);
+        for (int i = 1; i < values.length; ++i) {
+            arr[i] = new FunctionPoint(arr[i - 1].x + (rightX - leftX) / (values.length - 1), values[i]);
+        }
+    }
+    public double getLeftDomainBorder() {
+        return this.arr[0].x;
+    }
+    public double getRightDomainBorder() {
+        return this.arr[count - 1].x;
+    }
+    public double getFunctionValue(double X) {
+        if (X >= getLeftDomainBorder() && X <= getRightDomainBorder()) {
+            for (int i = 0; i < arr.length - 1; i++){
+                if (X >= arr[i].x && X <= arr[i + 1].x) {
+                    double y1 = arr[i].y;
+                    double y2 = arr[i + 1].y;
+                    double x1 = arr[i].x;
+                    double x2 = arr[i + 1].x;
+
+                    return y1 + (y2 - y1) * (X - x1)/(x2 - x1);
+                }
+            }
+        }
+        return Double.NaN;
+    }
+    public int getPointsCount(){
+        return count;
+    }
+    public FunctionPoint getPoint(int index){
+        FunctionPoint ans = new FunctionPoint(this.arr[index]);
+        return ans;
+    }
+    public void setPoint(int index, FunctionPoint point) {
+        if (point.x >= getLeftDomainBorder() && point.x <= getRightDomainBorder()) {
+            this.arr[index].x = point.x;
+            this.arr[index].y = point.y;
+        }
+    }
+    public double getPointX(int index) {
+        return this.arr[index].x;
+    }
+    public void setPointX(int index, double X) {
+        if (X >= getLeftDomainBorder() && X <= getRightDomainBorder()) {
+            this.arr[index].x = X;
+        }
+    }
+    public double getPointY(int index) {
+        return arr[index].y;
+    }
+    public void setPointY(int index, double Y) {
+        arr[index].y = Y;
+    }
+    public void deletePoint(int index) {
+        System.arraycopy(arr,index + 1, arr, index,getPointsCount() - index - 1);
+        --this.count;
+    }
+    public void addPoint(FunctionPoint point) {
+        if (count >= arr.length){
+            FunctionPoint[] newArr = new FunctionPoint[count + 5];
+            System.arraycopy(arr,0,newArr,0,count);
+            arr = newArr;
+        }
+        int index = 0;
+        while (index < count && arr[index].x < point.x){
+            index++;
+        }
+        System.arraycopy(arr, index, arr,index + 1,count - index);
+        arr[index] = point;
+        count++;
+    }
+}

@@ -1,0 +1,126 @@
+package functions;
+public class ArrayTabulatedFunction implements TabulatedFunction {
+    private FunctionPoint[] arr;
+    private int count;
+    public ArrayTabulatedFunction(double leftX, double rightX, int pointsCount){
+        if (leftX >= rightX || pointsCount < 2){
+            throw new IllegalArgumentException();
+        }
+        count = pointsCount;
+        arr = new FunctionPoint[pointsCount];
+        arr[0] = new FunctionPoint(leftX, 0);
+        for (int i = 1; i < pointsCount; ++i) {
+            arr[i] = new FunctionPoint(arr[i - 1].x + (rightX - leftX) / (pointsCount - 1), 0);
+        }
+    }
+    public ArrayTabulatedFunction(double leftX, double rightX, double[] values) throws IllegalArgumentException{
+        if (leftX >= rightX || values.length < 2){
+            throw new IllegalArgumentException();
+        }
+        count = values.length;
+        arr = new FunctionPoint[values.length];
+        arr[0] = new FunctionPoint(leftX,values[0]);
+        for (int i = 1; i < values.length; ++i) {
+            arr[i] = new FunctionPoint(arr[i - 1].x + (rightX - leftX) / (values.length - 1), values[i]);
+        }
+    }
+    public double getLeftDomainBorder() {
+        return arr[0].x;
+    }
+    public double getRightDomainBorder() {
+        return arr[count - 1].x;
+    }
+    public double getFunctionValue(double X) {
+        if (X >= getLeftDomainBorder() && X <= getRightDomainBorder()) {
+            for (int i = 0; i < arr.length - 1; i++){
+                if (X >= arr[i].x && X <= arr[i + 1].x) {
+                    double y1 = arr[i].y;
+                    double y2 = arr[i + 1].y;
+                    double x1 = arr[i].x;
+                    double x2 = arr[i + 1].x;
+
+                    return y1 + (y2 - y1) * (X - x1)/(x2 - x1);
+                }
+            }
+        }
+        return Double.NaN;
+    }
+    public int getPointsCount(){
+        return count;
+    }
+
+    //без throws у throw будет необработанное исключение
+    public FunctionPoint getPoint(int index) throws FunctionPointIndexOutOfBoundsException{
+        if (index > count || index <= 0){
+            throw new FunctionPointIndexOutOfBoundsException();
+        }
+        else {
+            FunctionPoint ans = new FunctionPoint(this.arr[index]);
+            return ans;
+        }
+    }
+    public void setPoint(int index, FunctionPoint point) throws FunctionPointIndexOutOfBoundsException, InappropriateFunctionPointException {
+        if (index < count && index > 0){
+            if (point.x >= getLeftDomainBorder() && point.x <= getRightDomainBorder()) {
+                this.arr[index].x = point.x;
+                this.arr[index].y = point.y;
+            }
+            else {throw new InappropriateFunctionPointException();}
+        }
+        else {throw new FunctionPointIndexOutOfBoundsException(); }
+    }
+    public double getPointX(int index)  throws FunctionPointIndexOutOfBoundsException{
+        if (index > count || index <= 0){
+            throw new FunctionPointIndexOutOfBoundsException();
+        }
+        else return this.arr[index].x;
+    }
+    public void setPointX(int index, double X)  throws FunctionPointIndexOutOfBoundsException, InappropriateFunctionPointException{
+        if (index <= count && index > 0){
+            if (X >= getLeftDomainBorder() && X <= getRightDomainBorder()) {
+                this.arr[index].x = X;
+            }
+            else {throw new InappropriateFunctionPointException();}
+            }
+        else {throw new FunctionPointIndexOutOfBoundsException(); }
+    }
+    public double getPointY(int index)  throws FunctionPointIndexOutOfBoundsException{
+        if (index > count || index <= 0){
+            throw new FunctionPointIndexOutOfBoundsException();
+        }
+        else return arr[index].y;
+    }
+    public void setPointY(int index, double Y)  throws FunctionPointIndexOutOfBoundsException{
+        if (index > count || index <= 0){
+            throw new FunctionPointIndexOutOfBoundsException();
+        }
+        else arr[index].y = Y;
+    }
+    public void deletePoint(int index)  throws FunctionPointIndexOutOfBoundsException, IllegalStateException{
+        if (index > count || index <= 0) {
+            if (index >= 3) {
+                System.arraycopy(arr, index + 1, arr, index, getPointsCount() - index - 1);
+                --this.count;
+            }
+            else {throw new IllegalStateException();}
+        }
+        else {throw new FunctionPointIndexOutOfBoundsException();}
+    }
+    public void addPoint(FunctionPoint point) throws InappropriateFunctionPointException{
+        if (count >= arr.length){
+            FunctionPoint[] newArr = new FunctionPoint[count + 5];
+            System.arraycopy(arr,0,newArr,0,count);
+            arr = newArr;
+        }
+        int index = 0;
+        while (index < count && arr[index].x < point.x){
+            index++;
+        }
+        if (point.x != arr[index].x) {
+            System.arraycopy(arr, index, arr, index + 1, count - index);
+            arr[index] = point;
+            count++;
+        }
+        else {throw new InappropriateFunctionPointException();}
+    }
+}
